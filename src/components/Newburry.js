@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Pathfinding, PathfindingHelper } from "three-pathfinding";
 function NewBurry() {
@@ -28,21 +28,7 @@ function NewBurry() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
 
-    /* ------------------ Adding a simple geometry to the scene ----------------- */
-
-    const agentHeight = 1.0;
-    const agentRadius = 0.25;
-    const agent = new THREE.Mesh(
-      new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight),
-      new THREE.MeshPhongMaterial({ color: "green" })
-    );
-    agent.position.y = agentHeight / 2;
-    const agentGroup = new THREE.Group();
-    agentGroup.add(agent);
-    agentGroup.position.z = 0;
-    agentGroup.position.x = 0;
-    agentGroup.position.y = 1;
-    scene.add(agentGroup);
+   
 
     /* ------------------------ Add lighting to the scene ----------------------- */
 
@@ -62,15 +48,13 @@ function NewBurry() {
     scene.add(directionalLight);
 
     /* ---------------------------- Loading 3D model ---------------------------- */
-
-    const loader = new GLTFLoader();
-
-    loader.load("model/demo-level.glb", (object) => {
-      scene.add(object.scene);
-    });
-    const pathfinding = new Pathfinding();
-    const pathfindingHelper = new PathfindingHelper();
-    scene.add(pathfindingHelper);
+const loader = new FBXLoader()
+loader.load('model/NewburyCabinet.fbx',(object)=>{
+    object.scale.set(0.05,0.05,0.05)
+    scene.add(object)
+})
+   
+   
    
    
 

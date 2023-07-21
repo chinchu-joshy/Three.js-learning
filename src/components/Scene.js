@@ -5,7 +5,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Pathfinding, PathfindingHelper } from "three-pathfinding";
 function Scene() {
   useEffect(() => {
-    
     /* ---------------------------- Basic scene setup --------------------------- */
 
     const scene = new THREE.Scene();
@@ -65,22 +64,21 @@ function Scene() {
     /* ---------------------------- Loading 3D model ---------------------------- */
 
     const loader = new GLTFLoader();
-  
-    const texture = new THREE.TextureLoader().load('texture/wall.avif' ); 
-    
+
+    const texture = new THREE.TextureLoader().load("texture/wall.avif");
+
     texture.wrapS = THREE.RepeatWrapping;
-texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set( 4, 4 );
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(4, 4);
     loader.load("model/demo-level.glb", (object) => {
-      object.scene.traverse((child)=>{
-        if(child.isMesh){
-          
-          child.material.map = texture
+      object.scene.traverse((child) => {
+        if (child.isMesh) {
+          child.material.map = texture;
           // child.material.color = new THREE.Color('#ffffff')
-          child.material.needsUpdate = true
-          console.log(child)
+          child.material.needsUpdate = true;
+          console.log(child);
         }
-      })
+      });
 
       scene.add(object.scene);
     });
@@ -118,18 +116,18 @@ texture.repeat.set( 4, 4 );
     function intersect(pos) {
       raycaster.setFromCamera(pos, camera);
       return raycaster.intersectObjects(scene.children);
-  }
+    }
     window.addEventListener("click", (e) => {
       clickMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       clickMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(clickMouse, camera);
-      const found = intersect(clickMouse)
-      
+      const found = intersect(clickMouse);
+
       if (found.length > 0) {
         let target = found[0].point;
-       
+
         groupId = pathfinding.getGroup(zone, agentGroup?.position);
-        
+
         const closest = pathfinding.getClosestNode(
           agentGroup.position,
           zone,
@@ -137,7 +135,6 @@ texture.repeat.set( 4, 4 );
         );
         navPath = pathfinding.findPath(closest.centroid, target, zone, groupId);
         if (navPath) {
-        
           pathfindingHelper.reset();
           pathfindingHelper.setPlayerPosition(agentGroup.position);
           pathfindingHelper.setTargetPosition(target);
@@ -146,24 +143,23 @@ texture.repeat.set( 4, 4 );
       }
     });
 
-
     /* --------------------------- moving the cylinder -------------------------- */
     const clock = new THREE.Clock();
-    function move ( delta ) {
-      if ( !navPath || navPath.length <= 0 ) return
-  
-      let targetPosition = navPath[ 0 ];
-      const distance = targetPosition.clone().sub( agentGroup.position );
-  
+    function move(delta) {
+      if (!navPath || navPath.length <= 0) return;
+
+      let targetPosition = navPath[0];
+      const distance = targetPosition.clone().sub(agentGroup.position);
+
       if (distance.lengthSq() > 0.05 * 0.05) {
-          distance.normalize();
-          // Move player to target
-          agentGroup.position.add( distance.multiplyScalar( delta * SPEED ) );
+        distance.normalize();
+        // Move player to target
+        agentGroup.position.add(distance.multiplyScalar(delta * SPEED));
       } else {
-          // Remove node from the path we calculated
-          navPath.shift();
+        // Remove node from the path we calculated
+        navPath.shift();
       }
-  }
+    }
 
     /* ----------------------------- Orbit controls ----------------------------- */
 
@@ -181,7 +177,7 @@ texture.repeat.set( 4, 4 );
 
     function animate() {
       requestAnimationFrame(animate);
-      move(clock.getDelta())
+      move(clock.getDelta());
       window.addEventListener("resize", onWindowResize);
       orbitControls.update();
       renderer.render(scene, camera);

@@ -6,8 +6,8 @@ import Threed from './pages/Threed';
 function App() {
   return (
     <div className="App">
-     <Threed/>
-     {/* <NewBurry/> */}
+     {/* <Threed/> */}
+     <NewBurry/>
     </div>
   );
 }

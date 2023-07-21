@@ -5,6 +5,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Pathfinding, PathfindingHelper } from "three-pathfinding";
 function Scene() {
   useEffect(() => {
+    
     /* ---------------------------- Basic scene setup --------------------------- */
 
     const scene = new THREE.Scene();
@@ -48,9 +49,9 @@ function Scene() {
 
     const light = new THREE.AmbientLight(0xffffff, 0.7); // soft white light
     scene.add(light);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
     directionalLight.position.x = 20;
-    directionalLight.positiony = 30;
+    directionalLight.position.y = 50;
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 4096;
     directionalLight.shadow.mapSize.height = 4096;
@@ -64,10 +65,26 @@ function Scene() {
     /* ---------------------------- Loading 3D model ---------------------------- */
 
     const loader = new GLTFLoader();
-
+  
+    const texture = new THREE.TextureLoader().load('texture/wall.avif' ); 
+    
+    texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 4, 4 );
     loader.load("model/demo-level.glb", (object) => {
+      object.scene.traverse((child)=>{
+        if(child.isMesh){
+          
+          child.material.map = texture
+          // child.material.color = new THREE.Color('#ffffff')
+          child.material.needsUpdate = true
+          console.log(child)
+        }
+      })
+
       scene.add(object.scene);
     });
+
     const pathfinding = new Pathfinding();
     const pathfindingHelper = new PathfindingHelper();
     scene.add(pathfindingHelper);
@@ -119,13 +136,13 @@ function Scene() {
           groupId
         );
         navPath = pathfinding.findPath(closest.centroid, target, zone, groupId);
-        // if (navPath) {
+        if (navPath) {
         
-        //   pathfindingHelper.reset();
-        //   pathfindingHelper.setPlayerPosition(agentGroup.position);
-        //   pathfindingHelper.setTargetPosition(target);
-        //   pathfindingHelper.setPath(navPath);
-        // }
+          pathfindingHelper.reset();
+          pathfindingHelper.setPlayerPosition(agentGroup.position);
+          pathfindingHelper.setTargetPosition(target);
+          pathfindingHelper.setPath(navPath);
+        }
       }
     });
 

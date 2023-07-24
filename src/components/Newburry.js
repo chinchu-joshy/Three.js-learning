@@ -36,7 +36,7 @@ function NewBurry() {
     scene.add(light);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.x = 20;
-    directionalLight.positiony = 30;
+    directionalLight.position.y = 30;
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 4096;
     directionalLight.shadow.mapSize.height = 4096;
